@@ -101,6 +101,7 @@ def parse(el,topic, direct=False):
 
 def gather():
  candidates=[]; successes=0
+ print('DIAG: Starting article discovery', flush=True)
  # Direct first-party feeds are primary, discovery RSS broadens coverage.
  tasks=[('direct','Salud','https://newsinhealth.nih.gov/rss')]
  tasks += [('google',topic,q) for topic,q in TOPICS.items()]
@@ -110,9 +111,13 @@ def gather():
    kind,topic=futs[f]
    try:
     entries=f.result(); successes+=1
+    accepted=0
     for el in entries[:75]:
      article=parse(el,topic,kind=='direct')
-     if article:candidates.append(article)
+     if article:
+      candidates.append(article)
+      accepted+=1
+    print(f'DIAG: feed={kind}/{topic} rss_entries={len(entries)} allowlisted_recent={accepted}', flush=True)
    except Exception as exc:print('WARNING source',kind,topic,str(exc))
  if successes==0:raise RuntimeError('No RSS sources accessible')
  candidates.sort(key=lambda x:(x['source_priority'],x['published']),reverse=True)
@@ -120,6 +125,7 @@ def gather():
  for a in candidates:
   if any(a['url']==b['url'] or SequenceMatcher(None,a['title_original'].lower(),b['title_original'].lower()).ratio()>.84 for b in unique):continue
   unique.append(a)
+ print(f'DIAG: feeds_ok={successes}/{len(tasks)} allowlisted_before_dedupe={len(candidates)} unique={len(unique)} sent_to_ai={min(55,len(unique))}',flush=True)
  return unique[:55]
 
 def ai_review(candidates):
@@ -147,20 +153,34 @@ def publish():
  candidates=gather()
  if not candidates:raise RuntimeError('No allowlisted articles; previous edition retained')
  reviews=ai_review(candidates)
+ print(f'DIAG: ai_reviews={len(reviews)} ai_approved={sum(bool(r.get("approve")) for r in reviews)} approved_score70={sum(bool(r.get("approve")) and isinstance(r.get("score"),int) and r["score"]>=70 for r in reviews)}',flush=True)
+ for r in reviews[:12]:
+  print('DIAG: review',str(r.get('id',''))[:20], 'approve=',r.get('approve'), 'score=',r.get('score'),'reason=',norm(str(r.get('reason','')))[:170],flush=True)
+ filtered={'id_or_duplicate':0,'ai_rejected_or_score':0,'text_length':0,'category':0}
  byid={a['id']:a for a in candidates}; items=[]; seen=set()
  for r in reviews:
   a=byid.get(r['id'])
-  if not a or a['id'] in seen or not r['approve'] or not 70<=r['score']<=100:continue
+  if not a or a['id'] in seen:
+   filtered['id_or_duplicate']+=1
+   continue
+  if not r['approve'] or not 70<=r['score']<=100:
+   filtered['ai_rejected_or_score']+=1
+   continue
   headline=norm(r['headline_es']); summary=norm(r['summary_es'])
-  if not (30<=len(headline)<=150 and 65<=len(summary)<=320):continue
-  if r['category'] not in TOPICS:continue
+  if not (30<=len(headline)<=150 and 65<=len(summary)<=320):
+   filtered['text_length']+=1
+   continue
+  if r['category'] not in TOPICS:
+   filtered['category']+=1
+   continue
   seen.add(a['id'])
   items.append({'id':a['id'],'title':headline,'category':r['category'],'source':a['source'],
    'published':a['published'],'url':a['url'],'summary':summary,'score':r['score'],
    'evidence':r['evidence'],'original_title':a['title_original']})
  items.sort(key=lambda a:(a['score'],a['published']),reverse=True)
  items=items[:18]
- if not items:raise RuntimeError('AI approved zero articles; preserving previous edition')
+ print('DIAG: editorial_rejections=',json.dumps(filtered,ensure_ascii=False),'publishable=',len(items),flush=True)
+ if not items:raise RuntimeError('AI approved zero articles; preserving previous edition. Inspect DIAG lines above')
  previous={'items':[]}
  if OUTPUT.exists():
   try:previous=json.loads(OUTPUT.read_text(encoding='utf-8'))
