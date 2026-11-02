@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a1012">
+  <meta name="description" content="FitPlus: actualidad diaria de entrenamiento, nutrición, salud y ciencia deportiva.">
+  <title>FitPlus | Noticias fitness, nutrición y salud con criterio</title>
+  <meta property="og:title" content="FitPlus — Actualidad fitness basada en fuentes">
+  <meta property="og:description" content="Entrenamiento, nutrición, salud, suplementos y ciencia. Selección editorial diaria con IA y enlaces originales.">
+  <meta property="og:type" content="website">
+  <meta name="robots" content="index,follow">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar wrap">
+    <a class="brand" href="#inicio" aria-label="FITPLUS inicio"><span class="brand-icon">↗</span><span>Fit<span class="accent">Plus</span><small>EL FITNESS AL DÍA</small></span></a>
+    <nav class="nav" aria-label="Navegación"><a href="#noticias">Noticias</a><a href="#como-funciona">Cómo funciona</a><a href="#fuentes">Fuentes</a></nav>
+    <span class="live"><span class="pulse"></span> EDICIÓN DIARIA · IA</span>
+  </header>
+  <main id="inicio">
+    <section class="hero wrap">
+      <div class="hero-copy"><div class="eyebrow"><span class="dash"></span> MOVIMIENTO. CIENCIA. ACTUALIDAD.</div>
+        <h1>EL FITNESS<br><em>NO SE DETIENE.</em><br> TÚ TAMPOCO.</h1>
+        <p>Lo que importa en entrenamiento, nutrición, salud y rendimiento. Noticias seleccionadas y organizadas para que vayas un paso por delante.</p>
+        <a class="primary" href="#noticias">EXPLORAR NOTICIAS <span>↗</span></a>
+        <div class="hero-stats"><div><strong id="totalStories">—</strong><span>NOTICIAS</span></div><div><strong>5</strong><span>TEMÁTICAS</span></div><div><strong>DIARIA</strong><span>EDICIÓN EDITORIAL</span></div></div>
+      </div>
+      <div class="hero-visual" role="img" aria-label="Diseño abstracto deportivo con silueta de atleta"><div class="hero-glow"></div><div class="motion-ring r1"></div><div class="motion-ring r2"></div><div class="hero-symbol">F<span>↗</span></div><div class="visual-label">STAY <b>IN MOTION</b><span> / 001</span></div></div>
+    </section>
+    <section class="ticker"><div class="wrap ticker-content"><span class="ticker-label">ÚLTIMA REVISIÓN</span><span id="updatedAt">Pendiente de la primera actualización</span><span class="ticker-right">FUENTES IDENTIFICADAS ↗</span></div></section>
+    <section id="noticias" class="news-section wrap"><div class="section-top"><div><div class="eyebrow"><span class="dash"></span> TU RADAR FITNESS</div><h2>EN EL <span>FOCO.</span></h2></div><div class="section-count" id="resultsCount">Cargando noticias…</div></div>
+      <div class="controls"><div class="filters" id="filters" aria-label="Filtrar noticias"><button class="chip active" data-category="Todas">Todas</button><button class="chip" data-category="Entrenamiento">Entrenamiento</button><button class="chip" data-category="Nutrición">Nutrición</button><button class="chip" data-category="Salud">Salud</button><button class="chip" data-category="Suplementos">Suplementos</button><button class="chip" data-category="Ciencia">Ciencia</button><button class="chip" data-category="Guardadas">★ Guardadas</button></div><label class="search-box"><span>⌕</span><input id="search" type="search" placeholder="Buscar noticias…" aria-label="Buscar noticias"></label></div>
+      <div id="editionStatus" class="edition-status" role="status" aria-live="polite">Cargando la edición…</div><div class="news-grid" id="newsGrid" aria-live="polite"></div><div id="emptyState" class="empty hidden"><div class="empty-icon">↗</div><h3>Aún no hay noticias para mostrar</h3><p>La primera actualización se realiza al ejecutar el flujo de GitHub Actions. Después se revisan las noticias automáticamente cada día. También puedes probar otra búsqueda o categoría.</p></div>
+      <div class="news-footer"><span>Las noticias se enlazan a sus medios originales.</span><button id="showMore" class="secondary hidden">VER MÁS NOTICIAS ↓</button></div>
+    </section>
+    <section id="como-funciona" class="method"><div class="wrap method-inner"><div><div class="eyebrow"><span class="dash"></span> SIN RUIDO. SOLO LO RELEVANTE.</div><h2>UNA RUTINA<br><span>INTELIGENTE.</span></h2><p>Actualizaciones periódicas a partir de fuentes publicadas, ordenadas por tema y actualidad. Los titulares enlazan siempre al artículo original.</p></div><div class="steps"><div><span>01</span><div><h3>RECOPILAR</h3><p>Consultar fuentes RSS de actualidad fitness y salud.</p></div></div><div><span>02</span><div><h3>SELECCIONAR</h3><p>Evaluar calidad, fecha, evidencia y duplicados mediante IA.</p></div></div><div><span>03</span><div><h3>PUBLICAR</h3><p>Publicar solo artículos aprobados, con enlaces y avisos de transparencia.</p></div></div></div></div></section>
+    <section id="fuentes" class="sources wrap"><div class="eyebrow"><span class="dash"></span> TRANSPARENCIA</div><h2>FUENTES Y CRITERIO.</h2><p>FitPlus consulta RSS de publicaciones autorizadas y utiliza Google Noticias como canal de descubrimiento. La IA trabaja sobre títulos y extractos, no necesariamente sobre artículos completos. Los resúmenes son orientativos, pueden contener errores y enlazan a la publicación de origen. No ofrecemos asesoramiento médico ni recomendaciones individualizadas. Si una edición falla, se conserva la última edición publicada y se muestra su fecha real. Las publicaciones no implican aval de sus instituciones de origen.</p></section>
+  <section class="wrap standards" aria-label="Compromisos editoriales"><div><b>CRITERIO ANTES QUE VIRALIDAD</b><p>Sin titulares inventados. Sin promesas médicas. Con fecha y fuente.</p></div><div><b>TRANSPARENCIA</b><p>Los resúmenes de IA no reemplazan la lectura del contenido original.</p></div><div><b>EDICIÓN IDENTIFICABLE</b><p>Mostramos la última publicación real, no una fecha ficticia.</p></div></section>
+  </main>
+  <footer class="footer wrap"><div class="brand footer-brand"><span class="brand-icon">↗</span><span>Fit<span class="accent">Plus</span></span></div><span>HECHO PARA MENTES Y CUERPOS EN MOVIMIENTO.</span><span>© <span id="year"></span> FITPLUS</span></footer>
+  <script src="app.js" defer></script>
+<!-- Los resúmenes son generados por IA a partir de metadatos de fuentes externas; consulta siempre el artículo original. -->
+</body>
+</html>

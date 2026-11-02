@@ -1,0 +1,54 @@
+name: FitPlus · Curación IA y publicación
+on:
+  schedule:
+    - cron: '17 6 * * *' # 06:17 UTC, no garantizado al minuto
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: fitplus-pages
+  cancel-in-progress: false
+jobs:
+  curate-and-publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Validate editorial pipeline
+        run: python -m unittest discover -s tests -v
+      - name: Restore previous edition from deployed website
+        env:
+          PAGES_JSON_URL: ${{ vars.PAGES_JSON_URL }}
+        run: |
+          if [ -n "$PAGES_JSON_URL" ]; then
+            curl -fLsS --max-time 15 "$PAGES_JSON_URL" -o /tmp/previous-news.json || true
+            python - <<'PY'
+          import json,pathlib
+          p=pathlib.Path('/tmp/previous-news.json')
+          if p.exists():
+              try:
+                  data=json.loads(p.read_text())
+                  if isinstance(data.get('items'),list):pathlib.Path('data/news.json').write_text(json.dumps(data))
+              except (ValueError,TypeError):pass
+          PY
+          fi
+      - name: Collect, review and curate with AI
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: gpt-4o-mini
+        run: python scripts/update_news.py
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deployment
+        uses: actions/deploy-pages@v4
